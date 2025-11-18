@@ -104,228 +104,210 @@ CREATE TABLE Table_Name (
 ```
 
 **Question 1**
----
-Question 1
-For products with a profit % less than 30% of selling price, update the selling price to provide a profit margin of 35% over cost price of the product in the products table.
-
-PRODUCTS TABLE
-
-name type
-
-product_id INT product_name VARCHAR(100) category VARCHAR(50) cost_price DECIMAL(10,2) sell_price DECIMAL(10,2) reorder_lvl INT quantity INT supplier_id INT
-
----
-sql
-```
-UPDATE Products 
-SET sell_price = CAST(cost_price * 1.35 AS INT)
-WHERE ((sell_price - cost_price) / sell_price) * 100 < 30;
+Create a table named Invoices with the following constraints:
+InvoiceID as INTEGER should be the primary key.
+InvoiceDate as DATE.
+Amount as REAL should be greater than 0.
+DueDate as DATE should be greater than the InvoiceDate. 
+OrderID as INTEGER should be a foreign key referencing Orders(OrderID).
+```sql
+CREATE TABLE Invoices(
+InvoiceID INTEGER,
+InvoiceDate DATE,
+Amount REAL CHECK(Amount>0),
+DueDate DATE CHECK (Duedate>InvoiceDate),
+OrderID INTEGER,
+FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
+);
 ```
 
 **Output:**
 
-<img width="1246" height="277" alt="image" src="https://github.com/user-attachments/assets/f95ed335-df41-420e-ae64-c9ec7fc68867" />
+<img width="1366" height="173" alt="image" src="https://github.com/user-attachments/assets/45d1380b-d11d-40e1-a8e3-f1a7c4ecdc1b" />
 
 
 **Question 2**
 ---
-Write a SQL statement to Increase the salary by 500 and email as 'updated' for employees with job ID 'SA_REP' and commission percentage greater than 0.15
+Insert all customers from Old_customers into Customers
 
-Employees table
+Table attributes are CustomerID, Name, Address, Email
 
-employee_id first_name last_name email phone_number hire_date job_id salary commission_pct manager_id department_id
----
-sql
-```
-UPDATE Employees
-SET salary = salary + 500,
-email = 'updated'
-WHERE job_id = 'SA_REP'
-AND commission_pct > 0.15;
+```sql
+INSERT INTO Customers(CustomerID,Name,Address,Email)
+SELECT CustomerID,Name,Address,Email
+from Old_customers;
 ```
 
 **Output:**
 
-<img width="1310" height="382" alt="image" src="https://github.com/user-attachments/assets/9e3ce301-1bae-4c3b-94a2-476fbd76bafb" />
+<img width="875" height="166" alt="image" src="https://github.com/user-attachments/assets/cf1db992-c83b-4cbd-9e74-03f7e2f5898f" />
 
 
 **Question 3**
 ---
-Write a SQL statement to Update the address to '58 Lakeview, Magnolia' where supplier ID is 5 in the suppliers table.
+Insert a product with ProductID 104, Name Tablet, and Category Electronics into the Products table, where Price and Stock should use default values.
 
-Suppliers Table
-
-name type
-
-supplier_id INT supplier_name VARCHAR(100) contact_person VARCHAR(100) phone_number VARCHAR(20) email VARCHAR(100) address VARCHAR(250)
----
 ```sql
-UPDATE Suppliers 
-SET address = '58 Lakeview, Magnolia'
-WHERE supplier_id = 5;
+INSERT INTO Products(ProductID,Name,Category)
+values(104,'Tablet','Electronics')
 ```
 
 **Output:**
 
-<img width="1362" height="252" alt="image" src="https://github.com/user-attachments/assets/ac2ba5a2-96a4-44c5-ba75-dd5ccf5a6d80" />
-
+<img width="1307" height="230" alt="image" src="https://github.com/user-attachments/assets/5a515fcc-42e7-4e60-95b7-5ffd6a0f8238" />
 
 **Question 4**
 ---
-Increase the reorder level by 30% for products from 'Food' category having quantity in stock less than 50% of existing reorder level in the products table name type
+Create a new table named products with the following specifications:
+product_id as INTEGER and primary key.
+product_name as TEXT and not NULL.
+list_price as DECIMAL (10, 2) and not NULL.
+discount as DECIMAL (10, 2) with a default value of 0 and not NULL.
+A CHECK constraint at the table level to ensure:
+list_price is greater than or equal to discount
+discount is greater than or equal to 0
+list_price is greater than or equal to 0
 
-product_id INT product_name VARCHAR(10) category VARCHAR(50) cost_price DECIMAL(10) sell_price DECIMAL(10) reorder_lvl INT quantity INT supplier_id INT
----
-sql
-```
-UPDATE Products
-SET reorder_lvl = ROUND(reorder_lvl * 1.3)
-WHERE cATEGORY = 'Food'
-AND quantity < 0.5 * reorder_lvl;
+```sql
+CREATE TABLE products(
+product_id INTEGER PRIMARY KEY,
+product_name TEXT NOT NULL,
+list_price DECIMAL(10,2) NOT NULL,
+discount DECIMAL(10,2) DEFAULT 0 NOT NULL,
+CHECK (list_price>=discount AND discount>=0 AND list_price>=0)
+);
 ```
 
 **Output:**
 
-<img width="1285" height="235" alt="image" src="https://github.com/user-attachments/assets/760cf3a4-4a48-47c0-a2d0-3b180fe1b041" />
-
+<img width="1388" height="175" alt="image" src="https://github.com/user-attachments/assets/7fa39bf2-59f4-4b3e-acd5-b6d009ec0c67" />
 
 **Question 5**
 ---
-Write a SQL statement to change the first_name column of employees table with 'John' for those employees whose department_id is 80 and gets a commission_pct below 0.35.
+In the Employee table, insert a record where some fields are NULL, another record where all fields are filled without any NULL values, and a third record where some fields are filled, and others are left as NULL.
 
-Employees table
+EmployeeID  Name          Position    Department  Salary
+----------  ------------  ----------  ----------  ----------
+5           George Clark  Consultant
+7           Noah Davis    Manager     HR          60000
+8           Ava Miller    Consultant  IT
 
-employee_id first_name last_name email phone_number hire_date job_id salary commission_pct manager_id department_id
----
-sql
-```
-UPDATE Employees
-SET first_name = 'John'
-WHERE department_id = 80
-AND commission_pct < 0.35;
+```sql
+INSERT INTO Employee(EmployeeID, Name,Position,Department,Salary)
+VALUES(5,'George Clark','Consultant',NULL,NULL);
+INSERT INTO Employee(EmployeeID, Name,Position,Department,Salary) 
+VALUES(7,'Noah Davis','Manager','HR',60000);
+INSERT INTO Employee(EmployeeID, Name,Position,Department,Salary) 
+VALUES(8,'Ava Miller','Consultant','IT',NULL);
 ```
 
 **Output:**
 
-<img width="1353" height="223" alt="image" src="https://github.com/user-attachments/assets/1c9f9730-f63e-40cf-8989-a14106771f77" />
+<img width="1285" height="282" alt="image" src="https://github.com/user-attachments/assets/5bfff43c-bfa8-4c9d-9d28-f56fa5ca37e8" />
 
 
 **Question 6**
 ---
-Write a SQL query to Delete customers from 'customer' table where 'GRADE' is exactly 2.
+Write an SQL query to add two new columns, department_id and manager_id, to the table employee with datatype of INTEGER. The manager_id column should have a default value of NULL.
 
-Sample table: Customer
+ 
 
-+-----------+-------------+-------------+--------------+--------------+-------+-------------+-------------+-------------+---------------+--------------+------------+
-|CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT |OUTSTANDING_AMT| PHONE_NO | AGENT_CODE | +-----------+-------------+-------------+--------------+--------------+-------+-------------+-------------+-------------+---------------+--------------+------------+ | C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 | | C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 | | C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
----
-sql
-```
-DELETE FROM Customer 
-WHERE GRADE = 2;
+```sql
+ALTER TABLE Employee
+ADD COLUMN department_id INTEGER;
+ALTER TABLE Employee
+ADD COLUMN manager_id INTEGER DEFAULT NULL;
 ```
 
 **Output:**
 
-<img width="703" height="495" alt="image" src="https://github.com/user-attachments/assets/11691a93-2ceb-4f0d-a333-58effe93d913" />
+<img width="1273" height="211" alt="image" src="https://github.com/user-attachments/assets/c1dfa2b9-20a8-4749-8366-bc99073f9ae9" />
 
 
 **Question 7**
 ---
-Write a SQL query to Delete customers from 'customer' table where 'GRADE' is not equal to 3.
+Create a table named Shipments with the following constraints:
+ShipmentID as INTEGER should be the primary key.
+ShipmentDate as DATE.
+SupplierID as INTEGER should be a foreign key referencing Suppliers(SupplierID).
+OrderID as INTEGER should be a foreign key referencing Orders(OrderID).
 
-Sample table: Customer
-
-+-----------+-------------+-------------+--------------+--------------+-------+-------------+-------------+-------------+---------------+--------------+------------+
-|CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT |OUTSTANDING_AMT| PHONE_NO | AGENT_CODE | +-----------+-------------+-------------+--------------+--------------+-------+-------------+-------------+-------------+---------------+--------------+------------+ | C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 | | C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 | | C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
----
-sql
-```
-DELETE FROM Customer
-WHERE GRADE <> 3;
+```sql
+CREATE TABLE Shipments(
+ShipmentID INTEGER PRIMARY KEY,
+ShipmentDate DATE,
+SupplierID INTEGER,
+OrderID INTEGER,
+FOREIGN KEY (supplierID) REFERENCES Suppliers(SupplierID),
+FOREIGN KEY (OrderID) REFERENCES Orders(OrderID));
 ```
 
 **Output:**
 
-<img width="598" height="412" alt="image" src="https://github.com/user-attachments/assets/9a811aa2-b4b2-4627-bb76-abc7829de890" />
+<img width="1322" height="210" alt="image" src="https://github.com/user-attachments/assets/b80b59ba-d6ec-420c-b12e-46f083c97570" />
 
 
 **Question 8**
 ---
-Write a SQL statement to Find the salesmen with all information who gets the commission within a range of 0.12 and 0.14.
+Create a table named Invoices with the following constraints:
 
-salesman table
+InvoiceID as INTEGER should be the primary key.
+InvoiceDate as DATE.
+DueDate as DATE should be greater than the InvoiceDate.
+Amount as REAL should be greater than 0.
 
-cid name type notnull dflt_value pk
 
-0 salesman_id numeric(5) 0 1 1 name varchar(30) 0 0 2 city varchar(15) 0 0 3 commission decimal(5,2) 0 0
----
-sql
-```
-SELECT *
-FROM salesman
-WHERE commission BETWEEN 0.12 AND 0.14;
+```sql
+CREATE TABLE Invoices(
+InvoiceID INTEGER PRIMARY KEY,
+InvoiceDate DATE,
+DueDate DATE CHECK (DueDate>InvoiceDate),
+Amount REAL CHECK (Amount>0));
 ```
 
 **Output:**
 
-<img width="737" height="378" alt="image" src="https://github.com/user-attachments/assets/96bb0789-8fff-43f3-ac41-64bf441b3b1a" />
+<img width="1298" height="285" alt="image" src="https://github.com/user-attachments/assets/5c27619a-83ab-46b4-892a-d8cd5eac1eef" />
 
 
 **Question 9**
 ---
-Write a SQL query to determine the age group of value1 in the Calculations table as 'Child' if it is less than 13, 'Teen' if it is between 13 and 19, and 'Adult' if it is 20 or older.
+Insert all employees from Former_employees into Employee
 
-cid name type notnull dflt_value pk
+Table attributes are EmployeeID, Name, Department, Salary
 
-0 id INTEGER 0 1 1 value1 REAL 0 0 2 value2 REAL 0 0 3 base INTEGER 0 0 4 exponent INTEGER 0 0 5 number REAL 0 0 6 decimal REAL 0 0
----
-
-sql
-```
-SELECT 
-id, 
-value1,
-CASE
-WHEN value1 < 13 THEN 'Child'
-WHEN value1 BETWEEN 13 AND 19 THEN 'Teen'
-ELSE 'Adult'
-END AS age_group
-FROM 
-Calculations;
+```sql
+INSERT INTO Employee(EmployeeID,Name,Department,Salary)
+SELECT EmployeeID,Name,Department,Salary 
+FROM Former_employees;
 ```
 
 **Output:**
 
-<img width="848" height="335" alt="image" src="https://github.com/user-attachments/assets/d7dbf5bb-d0a0-4b96-b5c6-e9cc0786660a" />
+<img width="1226" height="366" alt="image" src="https://github.com/user-attachments/assets/48558994-d25f-4d80-ac3e-ebf45aba7e22" />
 
 
 **Question 10**
 ---
-Write a SQL query to find the details of those salespeople who live in cities other than Paris and Rome. Return salesman_id, name, city, commission.
+Create a table named Locations with the following columns:
 
-Sample table: salesman
+LocationID as INTEGER
+LocationName as TEXT
+Address as TEXT
 
- salesman_id |    name    |   city   | commission 
--------------+------------+----------+------------
-        5001 | James Hoog | New York |       0.15
-        5002 | Nail Knite | Paris    |       0.13
-        5005 | Pit Alex   | London   |       0.11
--- 
-
-
-sql
-```
-SELECT salesman_id, name, city, commission
-FROM salesman
-WHERE city NOT IN ('Paris', 'Rome');
+```sql
+CREATE TABLE Locations(
+LocationID INTEGER,
+LocationName TEXT,
+Address TEXT);
 ```
 
 **Output:**
 
-<img width="818" height="337" alt="image" src="https://github.com/user-attachments/assets/aeb76a56-2c5b-43dc-8e14-e01cdf19cced" />
+<img width="1325" height="317" alt="image" src="https://github.com/user-attachments/assets/db78a63a-e995-46d2-b939-54db8b677912" />
 
-<img width="1497" height="278" alt="image" src="https://github.com/user-attachments/assets/06940ffb-5724-466e-a9d0-7de703fb6799" />
+<img width="1845" height="717" alt="image" src="https://github.com/user-attachments/assets/59a4aaf5-5262-4a8b-bff4-f30a67cf31d9" />
+
 
 
 ## RESULT
